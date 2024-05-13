@@ -5,7 +5,6 @@
     android:padding="16dp"
     android:background="#000000"> <!-- Fondo negro establecido aquí -->
 
-    <!-- TextView para "TU PROGRESO" -->
     <TextView
         android:id="@+id/textViewProgressTitle"
         android:layout_width="wrap_content"
