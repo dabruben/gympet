@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.dabutu.gympet"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.dabutu.gympet"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -39,6 +39,11 @@ android {
 
 dependencies {
 
+    //TabBar
+    implementation ("com.google.android.material:material:1.4.0")
+    implementation ("com.google.code.gson:gson:2.8.6")
+    //json
+    implementation ("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
