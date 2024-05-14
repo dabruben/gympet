@@ -1,8 +1,11 @@
 package com.dabutu.gympet
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import com.dabutu.gympet.nutrition.NutritionScreen
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -10,20 +13,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val buttonObjetivos = findViewById<Button>(R.id.buttonObjetivos)
-        val buttonHorario = findViewById<Button>(R.id.btnEjercicios)
-        val buttonNutricion = findViewById<Button>(R.id.buttonNutricion)
-
-        buttonObjetivos.setOnClickListener {
-            // Intent para abrir la actividad de Objetivos
-        }
-
-        buttonHorario.setOnClickListener {
-            // Intent para abrir la actividad de Horario Semanal
-        }
-
-        buttonNutricion.setOnClickListener {
-            // Intent para abrir la actividad de Nutrición
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    // Este es la pantalla actual, no hace nada o refresca
+                    true
+                }
+                R.id.nav_nutrition -> {
+                    // Navegar a NutritionScreen
+                    val intent = Intent(this, NutritionScreen::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
         }
     }
 }

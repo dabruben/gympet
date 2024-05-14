@@ -1,11 +1,10 @@
-<!-- activity_main.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
-    android:background="#000000"> <!-- Fondo negro establecido aquí -->
+    android:background="#000000">
 
-    <!-- TextView para "TU PROGRESO" -->
     <TextView
         android:id="@+id/textViewProgressTitle"
         android:layout_width="wrap_content"
@@ -38,25 +37,12 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <Button
-            android:id="@+id/buttonObjetivos"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Objetivos" />
 
-        <Button
-            android:id="@+id/btnEjercicios"
-            android:layout_width="0dp"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Ejercicios" />
-
-        <Button
-            android:id="@+id/buttonNutricion"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Nutrición" />
+            android:background="?android:attr/windowBackground"
+            app:menu="@menu/bottom_nav_menu" />
     </LinearLayout>
 </RelativeLayout>
