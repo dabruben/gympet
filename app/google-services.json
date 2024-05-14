@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "843943302221",
+    "project_id": "gympet-ea31e",
+    "storage_bucket": "gympet-ea31e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843943302221:android:2f1326033af3c67bb3f804",
+        "android_client_info": {
+          "package_name": "com.dabutu.gympet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6lqf_JgQ11vt9xh1PaX3ypeB_JwgadxY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
