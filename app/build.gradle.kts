@@ -39,6 +39,8 @@ android {
 
 dependencies {
 
+    //splashScreen
+    implementation("androidx.core:core-splashscreen:1.0.1")
     //TabBar
     implementation ("com.google.android.material:material:1.4.0")
     implementation ("com.google.code.gson:gson:2.8.6")
