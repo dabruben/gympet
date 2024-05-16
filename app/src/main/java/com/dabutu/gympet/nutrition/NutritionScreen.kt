@@ -22,6 +22,7 @@ class NutritionScreen : AppCompatActivity() {
     private lateinit var addedFoodsRecyclerView: RecyclerView
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var addFoodButton: Button
+
     private lateinit var foodAdapter: FoodAdapter
     private lateinit var addedFoodAdapter: AddedFoodAdapter
 
@@ -42,6 +43,7 @@ class NutritionScreen : AppCompatActivity() {
             openAddFoodActivity()
         }
     }
+
     private fun setupViews() {
         searchEditText = findViewById(R.id.searchEditText)
         totalCaloriesTextView = findViewById(R.id.totalCaloriesTextView)
@@ -66,6 +68,7 @@ class NutritionScreen : AppCompatActivity() {
             addedFoodsRecyclerView.adapter = addedFoodAdapter
         }
     }
+
 
 
     private fun setupSearch() {
@@ -117,10 +120,13 @@ class NutritionScreen : AppCompatActivity() {
     }
 
     private fun addFoodToFirestore(foodItem: FoodItem) {
+        val id = db.collection("foodItems").document().id
+        val newFood = foodItem.copy(id = id)
         db.collection("foodItems")
-            .add(foodItem)
+            .document(id)
+            .set(newFood)
             .addOnSuccessListener {
-                foodAdapter.addItem(foodItem)
+                foodAdapter.addItem(newFood)
             }
             .addOnFailureListener { exception ->
                 // Handle the error
@@ -155,6 +161,20 @@ class NutritionScreen : AppCompatActivity() {
 
     private fun openAddFoodActivity() {
         val intent = Intent(this, AddFoodActivity::class.java)
-        startActivity(intent)
+        startActivityForResult(intent, ADD_FOOD_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ADD_FOOD_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Reload the food items to reflect the newly added item
+            loadFoodItems { foodItems ->
+                foodAdapter.updateItems(foodItems.toMutableList())
+            }
+        }
+    }
+
+    companion object {
+        private const val ADD_FOOD_REQUEST_CODE = 1
     }
 }

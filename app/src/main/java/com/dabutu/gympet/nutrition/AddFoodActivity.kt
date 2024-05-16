@@ -1,6 +1,6 @@
 package com.dabutu.gympet.nutrition
 
-import android.content.Intent
+import android.app.Activity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -37,15 +37,19 @@ class AddFoodActivity : AppCompatActivity() {
         }
 
         cancelButton.setOnClickListener {
+            setResult(Activity.RESULT_CANCELED)
             finish()  // Cerrar esta actividad y volver a NutritionScreen
         }
     }
 
     private fun addFoodToFirestore(name: String, calories: Int) {
-        val newFood = FoodItem(name = name, calories = calories)
+        val id = db.collection("foodItems").document().id
+        val newFood = FoodItem(id = id, name = name, calories = calories)
         db.collection("foodItems")
-            .add(newFood)
+            .document(id)
+            .set(newFood)
             .addOnSuccessListener {
+                setResult(Activity.RESULT_OK)
                 finish()  // Cerrar esta actividad y volver a NutritionScreen
             }
             .addOnFailureListener { exception ->

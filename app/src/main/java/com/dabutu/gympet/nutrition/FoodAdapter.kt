@@ -51,6 +51,12 @@ class FoodAdapter(
         notifyDataSetChanged()
     }
 
+    fun updateItems(newFoodItems: MutableList<FoodItem>) {
+        foodItems.clear()
+        foodItems.addAll(newFoodItems)
+        filter("")
+    }
+
     inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val foodNameTextView: TextView = itemView.findViewById(R.id.foodNameTextView)
         private val caloriesTextView: TextView = itemView.findViewById(R.id.caloriesTextView)
@@ -75,7 +81,7 @@ class FoodAdapter(
                     removeItem(foodItem)
                 }
                 .addOnFailureListener { exception ->
-                    // Manejar el error
+                    // Handle the error
                 }
         }
     }

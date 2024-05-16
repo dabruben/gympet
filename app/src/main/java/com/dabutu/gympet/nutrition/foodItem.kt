@@ -1,3 +1,3 @@
 package com.dabutu.gympet.nutrition
 
-data class FoodItem(val id: Int = 0, val name: String = "", val calories: Int = 0)
+data class FoodItem(val id: String = "", val name: String = "", val calories: Int = 0)
