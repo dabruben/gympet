@@ -8,11 +8,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dabutu.gympet.MainActivity
 import com.dabutu.gympet.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
+
+
+
+
+
 
 class NutritionScreen : AppCompatActivity() {
 
@@ -55,21 +61,24 @@ class NutritionScreen : AppCompatActivity() {
     private fun setupAdapters() {
         loadFoodItems { foodItems ->
             foodAdapter = FoodAdapter(foodItems.toMutableList()) { item ->
-                addFoodToAddedList(item)
+                addFoodToSelectedList(item)
                 updateCalories(item.calories)
             }
 
-            addedFoodAdapter = AddedFoodAdapter(mutableListOf()) { item ->
-                removeFoodFromAddedList(item)
+            foodsRecyclerView.adapter = foodAdapter
+            foodsRecyclerView.layoutManager = LinearLayoutManager(this)
+        }
+
+        loadSelectedFoodItems { selectedFoodItems ->
+            addedFoodAdapter = AddedFoodAdapter(selectedFoodItems.toMutableList()) { item ->
+                removeFoodFromSelectedList(item)
                 updateCalories(-item.calories)
             }
 
-            foodsRecyclerView.adapter = foodAdapter
             addedFoodsRecyclerView.adapter = addedFoodAdapter
+            addedFoodsRecyclerView.layoutManager = LinearLayoutManager(this)
         }
     }
-
-
 
     private fun setupSearch() {
         searchEditText.addTextChangedListener(object : TextWatcher {
@@ -119,40 +128,43 @@ class NutritionScreen : AppCompatActivity() {
             }
     }
 
-    private fun addFoodToFirestore(foodItem: FoodItem) {
-        val id = db.collection("foodItems").document().id
-        val newFood = foodItem.copy(id = id)
+    private fun loadSelectedFoodItems(callback: (MutableList<FoodItem>) -> Unit) {
         db.collection("foodItems")
-            .document(id)
-            .set(newFood)
-            .addOnSuccessListener {
-                foodAdapter.addItem(newFood)
-            }
-            .addOnFailureListener { exception ->
-                // Handle the error
-            }
-    }
-
-    private fun addFoodToAddedList(foodItem: FoodItem) {
-        db.collection("addedFoodItems")
-            .add(foodItem)
-            .addOnSuccessListener {
-                addedFoodAdapter.addItem(foodItem)
-            }
-            .addOnFailureListener { exception ->
-                // Handle the error
-            }
-    }
-
-    private fun removeFoodFromAddedList(foodItem: FoodItem) {
-        db.collection("addedFoodItems")
-            .whereEqualTo("id", foodItem.id)
+            .whereEqualTo("isSelected", true)
             .get()
             .addOnSuccessListener { result ->
-                for (document in result) {
-                    db.collection("addedFoodItems").document(document.id).delete()
-                }
+                val selectedFoodItems = result.map { document ->
+                    document.toObject(FoodItem::class.java)
+                }.toMutableList()
+                callback(selectedFoodItems)
+            }
+            .addOnFailureListener { exception ->
+                // Handle the error
+            }
+    }
+
+    private fun addFoodToSelectedList(foodItem: FoodItem) {
+        db.collection("foodItems")
+            .document(foodItem.id)
+            .update("isSelected", true)
+            .addOnSuccessListener {
+                foodItem.isSelected = true
+                addedFoodAdapter.addItem(foodItem)
+                foodAdapter.updateItem(foodItem)
+            }
+            .addOnFailureListener { exception ->
+                // Handle the error
+            }
+    }
+
+    private fun removeFoodFromSelectedList(foodItem: FoodItem) {
+        db.collection("foodItems")
+            .document(foodItem.id)
+            .update("isSelected", false)
+            .addOnSuccessListener {
+                foodItem.isSelected = false
                 addedFoodAdapter.removeItem(foodItem)
+                foodAdapter.updateItem(foodItem)
             }
             .addOnFailureListener { exception ->
                 // Handle the error
@@ -167,9 +179,11 @@ class NutritionScreen : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_FOOD_REQUEST_CODE && resultCode == RESULT_OK) {
-            // Reload the food items to reflect the newly added item
             loadFoodItems { foodItems ->
                 foodAdapter.updateItems(foodItems.toMutableList())
+            }
+            loadSelectedFoodItems { selectedFoodItems ->
+                addedFoodAdapter.updateItems(selectedFoodItems.toMutableList())
             }
         }
     }

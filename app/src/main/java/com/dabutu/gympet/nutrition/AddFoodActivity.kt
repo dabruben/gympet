@@ -8,6 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dabutu.gympet.R
 import com.google.firebase.firestore.FirebaseFirestore
 
+
+
+
+
+
+
 class AddFoodActivity : AppCompatActivity() {
 
     private lateinit var nameEditText: EditText
@@ -31,26 +37,24 @@ class AddFoodActivity : AppCompatActivity() {
             val calories = caloriesEditText.text.toString().toIntOrNull()
             if (name.isNotEmpty() && calories != null) {
                 addFoodToFirestore(name, calories)
-            } else {
-                // Mostrar un mensaje de error o feedback al usuario
             }
         }
 
         cancelButton.setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
-            finish()  // Cerrar esta actividad y volver a NutritionScreen
+            finish()
         }
     }
 
     private fun addFoodToFirestore(name: String, calories: Int) {
         val id = db.collection("foodItems").document().id
-        val newFood = FoodItem(id = id, name = name, calories = calories)
+        val newFood = FoodItem(id = id, name = name, calories = calories, isSelected = false)
         db.collection("foodItems")
             .document(id)
             .set(newFood)
             .addOnSuccessListener {
                 setResult(Activity.RESULT_OK)
-                finish()  // Cerrar esta actividad y volver a NutritionScreen
+                finish()
             }
             .addOnFailureListener { exception ->
                 // Manejar el error
