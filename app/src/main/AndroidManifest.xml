@@ -24,6 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".nutrition.AddFoodActivity" />
         <activity
             android:name=".nutrition.NutritionScreen"
             android:exported="true"></activity>

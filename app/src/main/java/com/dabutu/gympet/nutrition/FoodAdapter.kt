@@ -7,14 +7,15 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dabutu.gympet.R
+import com.google.firebase.firestore.FirebaseFirestore
 
-class FoodAdapter(var items: List<FoodItem>, private val onAddClick: (FoodItem) -> Unit) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
+class FoodAdapter(
+    private val foodItems: MutableList<FoodItem>,
+    private val addItemCallback: (FoodItem) -> Unit
+) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
-    class FoodViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val foodNameTextView: TextView = view.findViewById(R.id.foodNameTextView)
-        val caloriesTextView: TextView = view.findViewById(R.id.caloriesTextView)
-        val addButton: Button = view.findViewById(R.id.addButton)
-    }
+    private var filteredFoodItems: MutableList<FoodItem> = foodItems
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_food, parent, false)
@@ -22,11 +23,60 @@ class FoodAdapter(var items: List<FoodItem>, private val onAddClick: (FoodItem) 
     }
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
-        val item = items[position]
-        holder.foodNameTextView.text = item.foodName
-        holder.caloriesTextView.text = "${item.calories} calories"
-        holder.addButton.setOnClickListener { onAddClick(item) }
+        val foodItem = filteredFoodItems[position]
+        holder.bind(foodItem, addItemCallback)
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = filteredFoodItems.size
+
+    fun addItem(foodItem: FoodItem) {
+        foodItems.add(foodItem)
+        filter("")
+    }
+
+    fun removeItem(foodItem: FoodItem) {
+        val index = foodItems.indexOf(foodItem)
+        if (index != -1) {
+            foodItems.removeAt(index)
+            filter("")
+        }
+    }
+
+    fun filter(query: String) {
+        filteredFoodItems = if (query.isEmpty()) {
+            foodItems
+        } else {
+            foodItems.filter { it.name.contains(query, ignoreCase = true) }.toMutableList()
+        }
+        notifyDataSetChanged()
+    }
+
+    inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val foodNameTextView: TextView = itemView.findViewById(R.id.foodNameTextView)
+        private val caloriesTextView: TextView = itemView.findViewById(R.id.caloriesTextView)
+        private val addButton: Button = itemView.findViewById(R.id.addButton)
+        private val deleteButton: Button = itemView.findViewById(R.id.deleteButton)
+
+        fun bind(foodItem: FoodItem, addItemCallback: (FoodItem) -> Unit) {
+            foodNameTextView.text = foodItem.name
+            caloriesTextView.text = "Calories: ${foodItem.calories}"
+            addButton.setOnClickListener { addItemCallback(foodItem) }
+            deleteButton.setOnClickListener { deleteFoodFromFirestore(foodItem) }
+        }
+
+        private fun deleteFoodFromFirestore(foodItem: FoodItem) {
+            db.collection("foodItems")
+                .whereEqualTo("id", foodItem.id)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        db.collection("foodItems").document(document.id).delete()
+                    }
+                    removeItem(foodItem)
+                }
+                .addOnFailureListener { exception ->
+                    // Manejar el error
+                }
+        }
+    }
 }
