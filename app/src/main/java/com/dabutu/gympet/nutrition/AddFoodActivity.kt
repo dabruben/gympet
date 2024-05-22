@@ -1,18 +1,13 @@
 package com.dabutu.gympet.nutrition
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.dabutu.gympet.R
 import com.google.firebase.firestore.FirebaseFirestore
-
-
-
-
-
-
 
 class AddFoodActivity : AppCompatActivity() {
 
@@ -53,7 +48,9 @@ class AddFoodActivity : AppCompatActivity() {
             .document(id)
             .set(newFood)
             .addOnSuccessListener {
-                setResult(Activity.RESULT_OK)
+                val resultIntent = Intent()
+                resultIntent.putExtra("calories", calories)
+                setResult(Activity.RESULT_OK, resultIntent)
                 finish()
             }
             .addOnFailureListener { exception ->

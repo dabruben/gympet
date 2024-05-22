@@ -9,10 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dabutu.gympet.R
 import com.google.firebase.firestore.FirebaseFirestore
 
-
-
-
-
 class FoodAdapter(
     private val foodItems: MutableList<FoodItem>,
     private val addItemCallback: (FoodItem) -> Unit

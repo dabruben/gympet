@@ -1,5 +1,6 @@
 package com.dabutu.gympet.nutrition
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -14,11 +15,7 @@ import com.dabutu.gympet.MainActivity
 import com.dabutu.gympet.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
-
-
-
-
-
+import android.content.SharedPreferences
 
 class NutritionScreen : AppCompatActivity() {
 
@@ -28,23 +25,31 @@ class NutritionScreen : AppCompatActivity() {
     private lateinit var addedFoodsRecyclerView: RecyclerView
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var addFoodButton: Button
+    private lateinit var totalCaloriesDisplayTextView: TextView
 
     private lateinit var foodAdapter: FoodAdapter
     private lateinit var addedFoodAdapter: AddedFoodAdapter
-
+    private lateinit var sharedPreferences: SharedPreferences
     private var totalCalories = 0
     private val db = FirebaseFirestore.getInstance()
+    private val selectedFoodItems = mutableListOf<FoodItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nutrition)
 
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("NutritionApp", Context.MODE_PRIVATE)
+
+        // Load total calories from SharedPreferences
+        totalCalories = sharedPreferences.getInt("totalCalories", 0)
+
         setupViews()
         setupAdapters()
         setupSearch()
         setupBottomNavigation()
+        updateTotalCaloriesTextView()
 
-        addFoodButton = findViewById(R.id.addFoodButton)
         addFoodButton.setOnClickListener {
             openAddFoodActivity()
         }
@@ -56,13 +61,17 @@ class NutritionScreen : AppCompatActivity() {
         foodsRecyclerView = findViewById(R.id.foodsRecyclerView)
         addedFoodsRecyclerView = findViewById(R.id.addedFoodsRecyclerView)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
+        addFoodButton = findViewById(R.id.addFoodButton)
+        totalCaloriesDisplayTextView = findViewById(R.id.textViewTotalCalories)
     }
 
     private fun setupAdapters() {
         loadFoodItems { foodItems ->
             foodAdapter = FoodAdapter(foodItems.toMutableList()) { item ->
-                addFoodToSelectedList(item)
-                updateCalories(item.calories)
+                if (!selectedFoodItems.contains(item)) {
+                    addFoodToSelectedList(item)
+                    updateCalories(item.calories)
+                }
             }
 
             foodsRecyclerView.adapter = foodAdapter
@@ -70,6 +79,7 @@ class NutritionScreen : AppCompatActivity() {
         }
 
         loadSelectedFoodItems { selectedFoodItems ->
+            this.selectedFoodItems.addAll(selectedFoodItems)
             addedFoodAdapter = AddedFoodAdapter(selectedFoodItems.toMutableList()) { item ->
                 removeFoodFromSelectedList(item)
                 updateCalories(-item.calories)
@@ -107,7 +117,20 @@ class NutritionScreen : AppCompatActivity() {
 
     private fun updateCalories(calories: Int) {
         totalCalories += calories
+        updateTotalCaloriesTextView()
+        saveTotalCalories()
+    }
+
+    private fun updateTotalCaloriesTextView() {
         totalCaloriesTextView.text = "Total Calories: $totalCalories"
+        totalCaloriesDisplayTextView.text = "Total Calories: $totalCalories"
+    }
+
+    private fun saveTotalCalories() {
+        with(sharedPreferences.edit()) {
+            putInt("totalCalories", totalCalories)
+            apply()
+        }
     }
 
     private fun navigateToHome() {
@@ -149,6 +172,7 @@ class NutritionScreen : AppCompatActivity() {
             .update("isSelected", true)
             .addOnSuccessListener {
                 foodItem.isSelected = true
+                selectedFoodItems.add(foodItem)
                 addedFoodAdapter.addItem(foodItem)
                 foodAdapter.updateItem(foodItem)
             }
@@ -163,6 +187,7 @@ class NutritionScreen : AppCompatActivity() {
             .update("isSelected", false)
             .addOnSuccessListener {
                 foodItem.isSelected = false
+                selectedFoodItems.remove(foodItem)
                 addedFoodAdapter.removeItem(foodItem)
                 foodAdapter.updateItem(foodItem)
             }
@@ -179,6 +204,8 @@ class NutritionScreen : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_FOOD_REQUEST_CODE && resultCode == RESULT_OK) {
+            val calories = data?.getIntExtra("calories", 0) ?: 0
+            updateCalories(calories)
             loadFoodItems { foodItems ->
                 foodAdapter.updateItems(foodItems.toMutableList())
             }
