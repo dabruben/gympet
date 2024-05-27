@@ -6,9 +6,11 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
+import com.dabutu.gympet.Routine.RoutineActivity
 import com.dabutu.gympet.nutrition.NutritionScreen
 import com.google.android.material.bottomnavigation.BottomNavigationView
-
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 class MainActivity : AppCompatActivity() {
 
     private lateinit var totalCaloriesTextView: TextView
