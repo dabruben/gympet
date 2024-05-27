@@ -42,6 +42,8 @@ android {
 
 dependencies {
 
+    //splashScreen
+    implementation("androidx.core:core-splashscreen:1.0.1")
     //TabBar
     implementation ("com.google.android.material:material:1.4.0")
     implementation ("com.google.code.gson:gson:2.8.6")
@@ -49,6 +51,9 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
+    // Firestore SDK
+    implementation ("com.google.firebase:firebase-firestore")
+    // Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.material:material:1.11.0")

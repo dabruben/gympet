@@ -6,7 +6,7 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/foodNameTextView"
+        android:id="@+id/selectedFoodNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -14,7 +14,7 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/foodCaloriesTextView"
+        android:id="@+id/selectedFoodCaloriesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Calories"
@@ -22,8 +22,8 @@
         android:layout_marginEnd="16dp"/>
 
     <Button
-        android:id="@+id/addButton"
+        android:id="@+id/removeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add" />
+        android:text="Remove" />
 </LinearLayout>
