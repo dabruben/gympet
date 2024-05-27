@@ -6,28 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".Routine.RoutineActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/addButton"
-        android:layout_margin="8dp" />
-
     <Button
         android:id="@+id/addButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:text="Add Routine"
         android:layout_margin="8dp"
-        android:layout_above="@+id/exercisesButton" />
+        android:layout_alignParentTop="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/addButton"
+        android:layout_above="@id/exercisesButton"
+        android:layout_margin="8dp" />
 
     <Button
         android:id="@+id/exercisesButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:text="Exercises"
+        android:layout_above="@id/bottom_navigation"
         android:layout_margin="8dp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import com.dabutu.gympet.Routine.RoutineActivity
 import com.dabutu.gympet.nutrition.NutritionScreen
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -23,6 +24,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_nutrition -> {
                     // Navegar a NutritionScreen
                     val intent = Intent(this, NutritionScreen::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_routine -> {
+                    val intent = Intent(this, RoutineActivity::class.java)
                     startActivity(intent)
                     true
                 }
