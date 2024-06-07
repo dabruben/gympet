@@ -1,49 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Routine.RoutineActivity">
+    tools:context=".Routine.Exercises.ExercisesActivity">
 
-    <Button
-        android:id="@+id/addButton"
+    <EditText
+        android:id="@+id/searchExerciseEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Routine"
+        android:hint="Search Exercise"
         android:layout_margin="8dp"
         android:layout_alignParentTop="true" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/exercisesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/addButton"
-        android:layout_above="@id/buttonsContainer"
+        android:layout_below="@id/searchExerciseEditText"
+        android:layout_above="@id/addExerciseButton"
         android:layout_margin="8dp" />
 
-    <LinearLayout
-        android:id="@+id/buttonsContainer"
+    <Button
+        android:id="@+id/addExerciseButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Add Exercise"
         android:layout_above="@id/bottom_navigation"
-        android:layout_margin="8dp"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/exercisesButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Exercises"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"/>
-
-        <Button
-            android:id="@+id/startRoutineButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Start Routine"
-            android:textSize="18sp"/>
-    </LinearLayout>
+        android:layout_margin="8dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

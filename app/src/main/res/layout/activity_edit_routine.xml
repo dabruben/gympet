@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".Routine.NewRoutineActivity">
+    tools:context=".Routine.EditRoutineActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        app:title="New Routine"
+        app:title="Edit Routine"
         app:titleTextColor="@android:color/white"
         app:menu="@menu/menu_new_routine"/>
 

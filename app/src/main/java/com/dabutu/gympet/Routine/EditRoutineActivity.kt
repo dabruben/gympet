@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dabutu.gympet.R
 import com.google.firebase.firestore.FirebaseFirestore
 
-class NewRoutineActivity : AppCompatActivity() {
+class EditRoutineActivity : AppCompatActivity() {
 
     private lateinit var toolbar: Toolbar
     private lateinit var titleEditText: EditText
@@ -26,14 +26,15 @@ class NewRoutineActivity : AppCompatActivity() {
     private lateinit var bodypartSpinner: Spinner
     private lateinit var addExerciseButton: Button
     private lateinit var exercisesRecyclerView: RecyclerView
-    private lateinit var exerciseAdapter: ExerciseAdapter
+    private lateinit var exerciseAdapter: EditRoutineAdapter
     private val exercisesList = ArrayList<Exercise>()
     private val selectedExercises: ArrayList<Exercise> = arrayListOf()
     private val db = FirebaseFirestore.getInstance()
+    private var routineId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_new_routine)
+        setContentView(R.layout.activity_edit_routine)
 
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -49,9 +50,9 @@ class NewRoutineActivity : AppCompatActivity() {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         bodypartSpinner.adapter = spinnerAdapter
 
-        exerciseAdapter = ExerciseAdapter(selectedExercises)
+        exerciseAdapter = EditRoutineAdapter(selectedExercises)
         exercisesRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@NewRoutineActivity)
+            layoutManager = LinearLayoutManager(this@EditRoutineActivity)
             adapter = exerciseAdapter
         }
 
@@ -68,7 +69,29 @@ class NewRoutineActivity : AppCompatActivity() {
             }
         }
 
+        val routineName = intent.getStringExtra("routineName")
+        routineName?.let {
+            loadRoutineByName(it)
+        }
+
         loadExercisesFromFirestore()
+    }
+
+    private fun loadRoutineByName(routineName: String) {
+        db.collection("routines")
+            .whereEqualTo("title", routineName)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() == 1) {
+                    val routine = documents.first().toObject(Routine::class.java)
+                    titleEditText.setText(routine.title)
+                    selectedExercises.addAll(routine.exercises)
+                    exerciseAdapter.notifyDataSetChanged()
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle the error
+            }
     }
 
     private fun loadExercisesFromFirestore() {
@@ -100,27 +123,67 @@ class NewRoutineActivity : AppCompatActivity() {
                 saveRoutine()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun saveRoutine() {
         val title = titleEditText.text.toString()
-        val newRoutine = Routine(title, selectedExercises.size, selectedExercises)
+        val updatedRoutine = Routine(title, selectedExercises.size, selectedExercises)
 
-        // Guardar la rutina en Firestore
+        // Buscar si la rutina ya existe
         db.collection("routines")
-            .add(newRoutine)
-            .addOnSuccessListener { documentReference ->
-                println("Routine added with ID: ${documentReference.id}")
-                // Enviar los datos de vuelta a la actividad anterior
-                val resultIntent = Intent()
-                resultIntent.putExtra("newRoutine", newRoutine)
-                setResult(Activity.RESULT_OK, resultIntent)
+            .whereEqualTo("title", title)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() == 1) {
+                    // Si existe, actualizar la rutina existente
+                    val documentId = documents.first().id
+                    db.collection("routines").document(documentId)
+                        .set(updatedRoutine)
+                        .addOnSuccessListener {
+                            println("Routine updated with ID: $documentId")
+                            // Enviar los datos de vuelta a la actividad anterior
+                            val resultIntent = Intent()
+                            resultIntent.putExtra("updatedRoutine", updatedRoutine)
+                            setResult(Activity.RESULT_OK, resultIntent)
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            println("Error updating routine: $e")
+                        }
+                } else {
+                    // Si no existe, crear una nueva rutina
+                    db.collection("routines")
+                        .add(updatedRoutine)
+                        .addOnSuccessListener { documentReference ->
+                            println("Routine added with ID: ${documentReference.id}")
+                            // Enviar los datos de vuelta a la actividad anterior
+                            val resultIntent = Intent()
+                            resultIntent.putExtra("newRoutine", updatedRoutine)
+                            setResult(Activity.RESULT_OK, resultIntent)
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            println("Error adding routine: $e")
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                println("Error finding routine: $e")
+            }
+    }
+
+    private fun deleteRoutine(routineId: String) {
+        db.collection("routines").document(routineId)
+            .delete()
+            .addOnSuccessListener {
+                println("Routine deleted with ID: $routineId")
                 finish()
             }
             .addOnFailureListener { e ->
-                println("Error adding routine: $e")
+                println("Error deleting routine: $e")
             }
     }
 }

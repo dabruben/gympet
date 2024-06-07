@@ -3,8 +3,9 @@ package com.dabutu.gympet.Routine
 import java.io.Serializable
 
 data class Routine(
-    val name: String,
-    val exerciseCount: Int
-) : Serializable {
+    val title: String = "",
+    val exerciseCount: Int = 0,
     var exercises: List<Exercise> = listOf()
+) : Serializable {
+    constructor() : this("", 0, listOf())
 }

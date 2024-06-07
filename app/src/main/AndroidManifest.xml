@@ -28,6 +28,9 @@
             android:name=".Routine.RoutineActivity"
             android:exported="true"></activity>
         <activity android:name=".Routine.NewRoutineActivity" />
+        <activity android:name=".Routine.EditRoutineActivity"/>
+        <activity android:name=".Routine.Exercises.ExercisesActivity"/>
+        <activity android:name=".Routine.Exercises.AddExerciseActivity"/>
 
         <activity android:name=".nutrition.AddFoodActivity" />
         <activity
