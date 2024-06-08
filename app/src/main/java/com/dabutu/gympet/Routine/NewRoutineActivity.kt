@@ -55,6 +55,8 @@ class NewRoutineActivity : AppCompatActivity() {
             adapter = exerciseAdapter
         }
 
+
+
         addExerciseButton.setOnClickListener {
             val selectedExerciseName = nameEditText.text.toString()
             val selectedBodypart = bodypartSpinner.selectedItem.toString()

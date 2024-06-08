@@ -13,7 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class RoutineAdapter(
     private val routines: MutableList<Routine>,
-    private val context: Context
+    private val context: Context,
+    private val startRoutineCallback: (Routine) -> Unit
 ) : RecyclerView.Adapter<RoutineAdapter.RoutineViewHolder>() {
 
     private val db = FirebaseFirestore.getInstance()
@@ -34,12 +35,17 @@ class RoutineAdapter(
         private val routineNameTextView: TextView = itemView.findViewById(R.id.routineNameTextView)
         private val numberOfExercisesTextView: TextView = itemView.findViewById(R.id.numberOfExercisesTextView)
         private val deleteRoutineButton: Button = itemView.findViewById(R.id.deleteRoutineButton)
+        private val startRoutineButton: Button = itemView.findViewById(R.id.startRoutineButton)
 
         init {
             itemView.setOnClickListener(this)
             deleteRoutineButton.setOnClickListener {
                 val routine = routines[adapterPosition]
                 deleteRoutine(routine)
+            }
+            startRoutineButton.setOnClickListener {
+                val routine = routines[adapterPosition]
+                startRoutineCallback(routine)
             }
         }
 

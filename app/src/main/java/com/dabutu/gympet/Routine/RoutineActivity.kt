@@ -3,6 +3,7 @@ package com.dabutu.gympet.Routine
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +27,12 @@ class RoutineActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = RoutineAdapter(routineList, this)
+        adapter = RoutineAdapter(routineList, this) { routine ->
+            val intent = Intent(this, StartRoutineActivity::class.java).apply {
+                putExtra("selectedRoutine", routine)
+            }
+            startActivity(intent)
+        }
         recyclerView.adapter = adapter
 
         val addButton: Button = findViewById(R.id.addButton)
@@ -39,11 +45,6 @@ class RoutineActivity : AppCompatActivity() {
         exercisesButton.setOnClickListener {
             val intent = Intent(this, ExercisesActivity::class.java)
             startActivity(intent)
-        }
-
-        val startRoutineButton: Button = findViewById(R.id.startRoutineButton)
-        startRoutineButton.setOnClickListener {
-            // Aquí puedes añadir la lógica para empezar la rutina
         }
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)

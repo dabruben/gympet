@@ -31,6 +31,9 @@
         <activity android:name=".Routine.EditRoutineActivity"/>
         <activity android:name=".Routine.Exercises.ExercisesActivity"/>
         <activity android:name=".Routine.Exercises.AddExerciseActivity"/>
+        <activity android:name=".Routine.StartRoutineActivity"/>
+        <activity android:name=".Routine.EndRoutineActivity"></activity>
+
 
         <activity android:name=".nutrition.AddFoodActivity" />
         <activity

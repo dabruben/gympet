@@ -1,39 +1,40 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:padding="16dp">
 
-    <LinearLayout
-        android:id="@+id/textContainer"
+    <TextView
+        android:id="@+id/routineNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="Routine Name"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingEnd="8dp" />
+
+    <TextView
+        android:id="@+id/numberOfExercisesTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Number of Exercises"
+        android:textSize="14sp"
+        android:paddingEnd="8dp"/>
+
+    <Button
+        android:id="@+id/startRoutineButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/deleteRoutineButton"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp">
-
-        <TextView
-            android:id="@+id/routineNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Routine Name"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/numberOfExercisesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Number of Exercises"
-            android:textSize="14sp" />
-    </LinearLayout>
+        android:text="Start"
+        android:textSize="12sp"
+        android:paddingEnd="8dp"/>
 
     <Button
         android:id="@+id/deleteRoutineButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delete"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true" />
-</RelativeLayout>
+        android:textSize="12sp" />
+</LinearLayout>

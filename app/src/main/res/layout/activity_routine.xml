@@ -37,12 +37,6 @@
             android:textSize="18sp"
             android:layout_marginBottom="8dp"/>
 
-        <Button
-            android:id="@+id/startRoutineButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Start Routine"
-            android:textSize="18sp"/>
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
